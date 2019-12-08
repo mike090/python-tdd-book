@@ -81,7 +81,7 @@ class NewVisitorTest(LiveServerTestCase):
 		# explanatory text to that effect.
 
 		# She visits that URL - her to-do list is still there.
-		self.fail('Finish the test!')
+
 		# Satisfied, she goes back to sleep
 
 	def test_multiple_users_can_start_lists_at_different_urls(self):

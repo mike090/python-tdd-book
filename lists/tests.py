@@ -1,5 +1,5 @@
 from django.test import TestCase
-from lists.models import Item
+from lists.models import Item, List
 
 # Create your tests here.
 
@@ -9,34 +9,46 @@ class HomePageTest(TestCase):
 		response = self.client.get('/')
 		self.assertTemplateUsed(response, 'home.html')
 
-class ItemModelTest(TestCase):
+class ListAndItemModelTest(TestCase):
 
 	item_1 = 'The first (ever) list item'
 	item_2 = 'Item the second'
 
 	def test_saving_and_retriving_items(self):
-			first_item	= Item()
-			first_item.text = self.item_1
-			first_item.save()
 
-			second_item = Item()
-			second_item.text = self.item_2
-			second_item.save()
+		list_ = List()
+		list_.save()
 
-			saved_items = Item.objects.all()
-			self.assertEqual(saved_items.count(), 2)
+		first_item	= Item()
+		first_item.text = self.item_1
+		first_item.list = list_
+		first_item.save()
 
-			first_saved_item = saved_items[0]
-			second_saved_item = saved_items[1]
+		second_item = Item()
+		second_item.text = self.item_2
+		second_item.list = list_
+		second_item.save()
 
-			self.assertEqual(first_saved_item.text, self.item_1)
-			self.assertEqual(second_saved_item.text, self.item_2)
+		saved_list = List.objects.first()
+		self.assertEqual(saved_list, list_)
+
+		saved_items = Item.objects.all()
+		self.assertEqual(saved_items.count(), 2)
+
+		first_saved_item = saved_items[0]
+		second_saved_item = saved_items[1]
+
+		self.assertEqual(first_saved_item.text, self.item_1)
+		self.assertEqual(first_saved_item.list, list_)
+		self.assertEqual(second_saved_item.text, self.item_2)
+		self.assertEqual(second_saved_item.list, list_)
 
 class ListViewTest(TestCase):
 	
 	def test_displays_all_items(self):
-		Item.objects.create(text='itemey 1')
-		Item.objects.create(text='itemey 2')
+		list_ = List.objects.create()
+		Item.objects.create(text='itemey 1', list=list_)
+		Item.objects.create(text='itemey 2', list=list_)
 		response = self.client.get('/lists/the-only-list-in-the-world/')
 		self.assertContains(response, 'itemey 1')
 		self.assertContains(response, 'itemey 2')

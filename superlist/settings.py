@@ -35,6 +35,7 @@ else:
     DEBUG = True
     SECRET_KEY = 'insecure-key-for-dev'
     ALLOWED_HOSTS = ['*']
+    print('D-E-B-U-G M-O-D-E-!')
 
 # Application definition
 
